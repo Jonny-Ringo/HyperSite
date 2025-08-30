@@ -1,6 +1,6 @@
 # HyperSite
 
-Current process demonstration on esifyCnU7dWKzFAfhQpz2UWV0Wlaa-jOMKqCXwlyHvgLIVE
+Current process demonstration on `esifyCnU7dWKzFAfhQpz2UWV0Wlaa-jOMKqCXwlyHvg`
 
 Revolutionary website built on AO's addressable endpoints feature, where every Lua variable becomes a directly accessible web endpoint.
 
@@ -58,11 +58,12 @@ Revolutionary website built on AO's addressable endpoints feature, where every L
 ## Technical Details
 
 - **Framework**: AO Addressable Endpoints
-- **Language**: Lua
+- **Language**: HTML, CSS, and JS wrapped in Lua
 - **Styling**: CSS with custom properties
 - **Comments**: JSON storage with real-time updates
 - **Images**: Arweave integration for OG image hosting
 
 ## About
+
 
 Built by Jonny Ringo as a demonstration of AO's revolutionary addressable endpoints feature. No servers, no deployments - just pure, addressable variables that become instant web endpoints.
