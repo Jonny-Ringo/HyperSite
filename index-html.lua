@@ -6,6 +6,11 @@
 
 local json = require('json')
 
+-- Basic variable definitions (updated by other files when loaded)
+styles = styles or ""
+nav = nav or ""
+footer = footer or ""
+
 -- Website Configuration
 config = {
     site_name = "HyperSite",
@@ -29,6 +34,7 @@ function create_meta(title, description, image_url, page_path)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>]=] .. title .. [=[</title>
     <meta name="description" content="]=] .. description .. [=[">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#127752;</text></svg>">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -78,8 +84,12 @@ nav = [=[
 footer = [=[
 <footer>
     <div class="container">
-        <p>&copy; 2025 HyperSite. Built with revolutionary addressable endpoints.</p>
+        <p>2025 HyperSite. Built with revolutionary addressable endpoints.</p>
         <p>Each page is a separate variable accessible at <code>/now/{page_name}</code></p>
+        <p style="margin-top: 1rem;">
+            <a href="https://github.com/Jonny-Ringo/HyperSite" target="_blank" style="color: var(--primary); text-decoration: none; margin-right: 1rem; font-size: 1.2rem;" title="GitHub Repository">&#128187; GitHub</a>
+            <a href="https://x.com/jonnyringo711" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 1.2rem;" title="Follow on X">&#128038; @jonnyringo711</a>
+        </p>
     </div>
 </footer>
 ]=]
@@ -108,7 +118,7 @@ home = [=[<!DOCTYPE html>
             
             <div class="grid">
                 <div class="card">
-                    <h2>&#127760; Modular Architecture</h2>
+                    <h2>&#129518; Modular Architecture</h2>
                     <p>Every component is a separate variable accessible at unique endpoints.</p>
                     <a href="/]=] .. id .. [=[/now/about" class="btn">Learn More</a>
                 </div>
@@ -120,9 +130,9 @@ home = [=[<!DOCTYPE html>
                 </div>
                 
                 <div class="card">
-                    <h2>&#9889; Real-Time Updates</h2>
-                    <p>Update any component by modifying its variable - changes are instant.</p>
-                    <a href="/]=] .. id .. [=[/now/template" class="btn">Use Template</a>
+                    <h2>&#127760; No More Servers</h2>
+                    <p>Built-in data hosting and management - no external databases or hosting required.</p>
+                    <a href="/]=] .. id .. [=[/now/chat" class="btn">Join Discussion</a>
                 </div>
             </div>
             
@@ -172,7 +182,7 @@ Handlers.add('AddComment', 'add-comment', function(msg)
     local timestamp = tostring(os.time())
     local tags = msg.Tags or {}
     
-    -- Get parameters from message fields (they come through as direct properties)
+    -- Back to working method with URL parameters
     local author = msg.author or tags.author or msg.From or "Anonymous"
     local content = msg.comment or tags.comment or msg.Data or ""
     local browserTimestamp = tonumber(msg.timestamp) or os.time() * 1000
@@ -180,6 +190,57 @@ Handlers.add('AddComment', 'add-comment', function(msg)
     -- Ensure comments_table exists
     if not comments_table then
         comments_table = {}
+    end
+    
+    -- Function to clean existing duplicates
+    local function removeDuplicates()
+        local cleaned = {}
+        local seen = {}
+        
+        for i, comment in ipairs(comments_table) do
+            local key = comment.author .. "|" .. comment.content
+            local commentTime = comment.timestamp / 1000
+            
+            -- Check if we've seen this author+content combo recently
+            local isDuplicate = false
+            if seen[key] then
+                local timeDiff = math.abs(commentTime - seen[key].time)
+                if timeDiff < 30 then
+                    isDuplicate = true
+                    print("Removing existing duplicate comment from: " .. comment.author)
+                end
+            end
+            
+            if not isDuplicate then
+                table.insert(cleaned, comment)
+                seen[key] = {time = commentTime, index = #cleaned}
+            end
+        end
+        
+        comments_table = cleaned
+        -- Update the JSON endpoint
+        comments = json.encode(comments_table)
+    end
+    
+    -- Clean existing duplicates first
+    removeDuplicates()
+    
+    -- Check for duplicates against cleaned table (prevent new duplicate)
+    for i, existing in ipairs(comments_table) do
+        if existing.author == author and existing.content == content then
+            local time_diff = math.abs((browserTimestamp / 1000) - (existing.timestamp / 1000))
+            if time_diff < 30 then
+                print("Duplicate comment detected within 30 seconds - ignoring")
+                send({
+                    target = msg.From,
+                    data = json.encode({
+                        status = "duplicate",
+                        message = "Duplicate comment detected - not added"
+                    })
+                })
+                return
+            end
+        end
     end
     
     local comment = {
@@ -211,6 +272,110 @@ Handlers.add('AddComment', 'add-comment', function(msg)
     
     print("New comment added by " .. comment.author .. ": " .. comment.content)
 end)
+
+-- Dynamic Blog Post Comments Handler
+Handlers.add('AddPostComment', 'add-post-comment', function(msg)
+    print("=== BLOG POST COMMENT DEBUG ===")
+    print("msg.Tags:", json.encode(msg.Tags or {}))
+    
+    local timestamp = tostring(os.time())
+    local tags = msg.Tags or {}
+    
+    -- Parse comment data
+    local author = msg.author or tags.author or msg.From or "Anonymous"
+    local content = msg.comment or tags.comment or msg.Data or ""
+    local browserTimestamp = tonumber(msg.timestamp) or os.time() * 1000
+    local post_id = msg.post_id or tags.post_id or "post_1" -- Default to post_1
+    
+    -- Dynamic table names
+    local comments_table_name = post_id .. "_comments_table"
+    local comments_json_name = post_id .. "_comments"
+    
+    -- Initialize the comments table for this post if it doesn't exist
+    if not _G[comments_table_name] then
+        _G[comments_table_name] = {}
+    end
+    
+    -- Function to clean existing duplicates for this specific post
+    local function removeDuplicates()
+        local cleaned = {}
+        local seen = {}
+        local comments_table = _G[comments_table_name]
+        
+        for i, comment in ipairs(comments_table) do
+            local key = comment.author .. "|" .. comment.content
+            local commentTime = comment.timestamp / 1000
+            
+            local isDuplicate = false
+            if seen[key] then
+                local timeDiff = math.abs(commentTime - seen[key].time)
+                if timeDiff < 30 then
+                    isDuplicate = true
+                    print("Removing duplicate comment from " .. post_id .. ": " .. comment.author)
+                end
+            end
+            
+            if not isDuplicate then
+                table.insert(cleaned, comment)
+                seen[key] = {time = commentTime, index = #cleaned}
+            end
+        end
+        
+        _G[comments_table_name] = cleaned
+        _G[comments_json_name] = json.encode(cleaned)
+    end
+    
+    -- Clean existing duplicates first
+    removeDuplicates()
+    
+    local comments_table = _G[comments_table_name]
+    
+    -- Check for duplicates
+    for i, existing in ipairs(comments_table) do
+        if existing.author == author and existing.content == content then
+            local time_diff = math.abs((browserTimestamp / 1000) - (existing.timestamp / 1000))
+            if time_diff < 30 then
+                print("Duplicate " .. post_id .. " comment detected - ignoring")
+                send({
+                    target = msg.From,
+                    data = json.encode({
+                        status = "duplicate",
+                        message = "Duplicate comment detected - not added"
+                    })
+                })
+                return
+            end
+        end
+    end
+    
+    local comment = {
+        id = #comments_table + 1,
+        author = author,
+        content = content,
+        timestamp = browserTimestamp,
+        serverTimestamp = timestamp,
+        date = os.date("%Y-%m-%d %H:%M", math.floor(browserTimestamp / 1000))
+    }
+    
+    -- Add comment to the specific post's table
+    table.insert(_G[comments_table_name], comment)
+    
+    -- Update the JSON endpoint for this post
+    _G[comments_json_name] = json.encode(_G[comments_table_name])
+    
+    -- Send confirmation
+    send({
+        target = msg.From,
+        data = json.encode({
+            status = "success",
+            message = "Comment added to " .. post_id .. " successfully!",
+            comment = comment
+        })
+    })
+    
+    print("New comment added to " .. post_id .. " by " .. comment.author .. ": " .. comment.content)
+end)
+
 
 -- Handler to list all available endpoints
 Handlers.add('GetSitemap', 'GetSitemap', function(msg)

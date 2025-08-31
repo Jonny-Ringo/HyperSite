@@ -24,10 +24,9 @@ about = [=[<!DOCTYPE html>
                 <h2>&#127919; Key Features</h2>
                 <ul style="margin: 1rem 0; padding-left: 2rem;">
                     <li>Each page is a separate Lua variable</li>
-                    <li>Direct HTTP access to any component</li>
-                    <li>Modular and maintainable architecture</li>
+                    <li>Direct HTTP access to any component as an endpoint</li>
+                    <li>Built-in data management and storage without seperate servers or hosts</li>
                     <li>Real-time updates without deployments</li>
-                    <li>Built-in API documentation</li>
                 </ul>
                 
                 <h2>&#128295; Architecture</h2>
@@ -36,7 +35,7 @@ about = [=[<!DOCTYPE html>
                 <div class="grid">
                     <div class="card" style="background: rgba(0, 255, 136, 0.05);">
                         <h3>&#128196; Pages</h3>
-                        <p><code>home</code>, <code>about</code>, <code>chat</code>, <code>template</code></p>
+                        <p><code>home</code>, <code>about</code>, <code>template</code></p>, <code>discussion</code>
                     </div>
                     <div class="card" style="background: rgba(0, 255, 136, 0.05);">
                         <h3>&#129513; Components</h3>
@@ -44,7 +43,7 @@ about = [=[<!DOCTYPE html>
                     </div>
                     <div class="card" style="background: rgba(0, 255, 136, 0.05);">
                         <h3>&#128202; Data</h3>
-                        <p><code>config</code>, <code>blog_posts</code>, <code>projects_data</code></p>
+                        <p><code>config</code>, <code>blog_posts</code>, <code>projects_data</code></p>, <code>comments</code></p>
                     </div>
                 </div>
             </div>

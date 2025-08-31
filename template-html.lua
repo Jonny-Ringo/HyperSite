@@ -38,9 +38,9 @@ about = [[ &lt;html&gt;&lt;body&gt;About Us&lt;/body&gt;&lt;/html&gt; ]]
             
             <div class="card">
                 <h2>&#128221; Basic Website Template</h2>
-                <p>Here's a complete 3-page website template you can copy and customize:</p>
+                <p>Here's a complete 2-page website template you can copy and customize:</p>
                 
-                <div class="code" style="font-size: 0.85rem; line-height: 1.4;">
+                <div class="code" style="font-size: 0.85rem; line-height: 1.4;">t
 -- Basic styles (accessible at /now/css)<br/>
 css = [[<br/>
 &lt;style&gt;<br/>
@@ -83,8 +83,8 @@ css = [[<br/>
 -- Navigation component (accessible at /now/navigation)<br/>
 navigation = [[<br/>
 &lt;nav&gt;<br/>
-&nbsp;&nbsp;&lt;a href="/{PROCESS_ID}/now/main"&gt;Home&lt;/a&gt;<br/>
-&nbsp;&nbsp;&lt;a href="/{PROCESS_ID}/now/about"&gt;About&lt;/a&gt;<br/>
+&nbsp;&nbsp;&lt;a href="/{YOUR_PROCESS_ID}/now/main"&gt;Home&lt;/a&gt;<br/>
+&nbsp;&nbsp;&lt;a href="/{YOUR_PROCESS_ID}/now/about"&gt;About&lt;/a&gt;<br/>
 &lt;/nav&gt;<br/>
 ]]<br/><br/>
 -- Homepage (accessible at /now/main)<br/>
@@ -99,8 +99,8 @@ main = [[<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Open Graph --&gt;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:title" content="My AO Website"&gt;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:description" content="Revolutionary variable-based website"&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:image" content="/{PROCESS_ID}/now/og_image"&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:url" content="/{PROCESS_ID}/now/main"&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:image" content="/{YOUR_PROCESS_ID}/now/og_image"&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;meta property="og:url" content="/{YOUR_PROCESS_ID}/now/main"&gt;<br/>
 &lt;/head&gt;<br/>
 &lt;body&gt;<br/>
 ]] .. css .. navigation .. [[<br/>
@@ -127,7 +127,7 @@ about = css .. navigation .. [[<br/>
                 <h2>&#128295; How to Use This Template</h2>
                 <ol style="padding-left: 2rem; line-height: 1.8;">
                     <li><strong>Save the code above</strong> as index.lua</li>
-                    <li><strong>Replace {PROCESS_ID}</strong> in the navigation links with your actual AO process ID</li>
+                    <li><strong>Replace {YOUR_PROCESS_ID}</strong> in the template with your actual AO process ID</li>
                     <li><code><strong>.load index.lua</strong></code> into your AO process</li>
                     <li><strong>Your website is instantly live!</strong> Access pages at:
                         <ul style="margin: 10px 0; padding-left: 20px;">
