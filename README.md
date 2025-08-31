@@ -69,3 +69,4 @@ Revolutionary website built on AO's addressable endpoints feature, where every L
 
 Built by Jonny Ringo as a demonstration of AO's revolutionary addressable endpoints feature. No servers, no deployments - just pure, addressable variables that become instant web endpoints.
 
+
